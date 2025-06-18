@@ -15,7 +15,7 @@ const RankingPage = ({ darkMode }: { darkMode: boolean }) => {
   useEffect(() => {
     const fetchRankings = async () => {
       try {
-        const res = await fetch(`/api/contest/rankings/${cid}`);
+        const res = await fetch(`https://coding-platform-backend-ol9u.onrender.com/api/contest/rankings/${cid}`);
         const data = await res.json();
         setRankings(data);
         setLoading(false);

@@ -14,7 +14,7 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
   const [user,setUser] = useRecoilState(userAtom);
   const handleLogout = async() =>{
     try {
-      const res = await fetch('/api/user/logout',{
+      const res = await fetch('https://coding-platform-backend-ol9u.onrender.com/api/user/logout',{
         method:"POST"
       })
       if(res.ok){

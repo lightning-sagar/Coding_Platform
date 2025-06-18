@@ -31,7 +31,7 @@ const AuthPages: React.FC<AuthPagesProps> = ({ darkMode }) => {
     }
     const { confirmPassword, ...userPayload } = formData;
     try {
-      const res = await fetch(`/api/user/${mode}`,{
+      const res = await fetch(`https://coding-platform-backend-ol9u.onrender.com/api/user/${mode}`,{
         method:"POST",
         headers: {
           "Content-Type": "application/json"

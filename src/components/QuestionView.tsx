@@ -133,7 +133,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
       .join("###");
     
     try {
-      const res = await fetch("/api/submit", {
+      const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

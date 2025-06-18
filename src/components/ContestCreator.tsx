@@ -113,6 +113,7 @@ const ContestCreator: React.FC<ContestCreatorProps> = ({ darkMode }) => {
     try {
       const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/create", {
         method: "POST",
+          credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

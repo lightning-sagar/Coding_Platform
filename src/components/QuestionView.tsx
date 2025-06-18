@@ -134,6 +134,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
     
     try {
       const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/submit", {
+          credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -33,6 +33,7 @@ const AuthPages: React.FC<AuthPagesProps> = ({ darkMode }) => {
     try {
       const res = await fetch(`https://coding-platform-backend-ol9u.onrender.com/api/user/${mode}`,{
         method:"POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },

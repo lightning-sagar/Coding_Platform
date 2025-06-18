@@ -11,21 +11,28 @@ interface NavbarPageProps {
 
 const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
-  const [user,setUser] = useRecoilState(userAtom);
-  const handleLogout = async() =>{
+  const [user, setUser] = useRecoilState(userAtom);
+  const handleLogout = async () => {
     try {
-      const res = await fetch('https://coding-platform-backend-ol9u.onrender.com/api/user/logout',{
-        method:"POST"
-      })
-      if(res.ok){
-        setUser(null);            
-      localStorage.removeItem('user'); 
-        navigate('/');
+      const res = await fetch(
+        "https://coding-platform-backend-ol9u.onrender.com/api/user/logout",
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.ok) {
+        setUser(null);
+        localStorage.removeItem("user");
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
     <header
       className={`backdrop-blur-md border-b sticky top-0 z-50 transition-colors duration-300 ${
@@ -57,7 +64,7 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
             >
               {darkMode ? "☀️" : "🌙"}
             </button>
-            {user && (user.accountType!=="student") && (
+            {user && user.accountType !== "student" && (
               <>
                 <button
                   onClick={() => navigate("create-contest")}
@@ -69,27 +76,27 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
             )}
 
             {!user ? (
-                <button
-                  onClick={() => navigate("login")}
-                  className={`px-4 py-2 border rounded-lg transition-colors ${
-                    darkMode
-                      ? "text-orange-400 border-orange-400 hover:bg-orange-900/20"
-                      : "text-orange-600 border-orange-600 hover:bg-orange-50"
-                  }`}
-                >
-                  Login
-                </button>
+              <button
+                onClick={() => navigate("login")}
+                className={`px-4 py-2 border rounded-lg transition-colors ${
+                  darkMode
+                    ? "text-orange-400 border-orange-400 hover:bg-orange-900/20"
+                    : "text-orange-600 border-orange-600 hover:bg-orange-50"
+                }`}
+              >
+                Login
+              </button>
             ) : (
-                <button
-                  onClick={handleLogout}
-                  className={`px-4 py-2 border rounded-lg transition-colors ${
-                    darkMode
-                      ? "text-orange-400 border-orange-400 hover:bg-orange-900/20"
-                      : "text-orange-600 border-orange-600 hover:bg-orange-50"
-                  }`}
-                >
-                  logout
-                </button>
+              <button
+                onClick={handleLogout}
+                className={`px-4 py-2 border rounded-lg transition-colors ${
+                  darkMode
+                    ? "text-orange-400 border-orange-400 hover:bg-orange-900/20"
+                    : "text-orange-600 border-orange-600 hover:bg-orange-50"
+                }`}
+              >
+                logout
+              </button>
             )}
           </div>
         </div>

@@ -32,6 +32,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
     const fetchQuestions = async () => {
       try {
         const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/fetch-multiple", {
+          credentials: "include",
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -54,6 +55,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
     try {
       const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/start", {
         method: "POST",
+          credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

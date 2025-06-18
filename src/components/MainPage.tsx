@@ -37,6 +37,7 @@ const MainPage: React.FC<MainPageProps> = ({ darkMode, toggleDarkMode }) => {
     const getContest = async () => {
       try {
         const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/", {
+          credentials: "include",
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });

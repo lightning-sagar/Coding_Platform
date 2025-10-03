@@ -19,13 +19,14 @@ import RankingPage from "./components/RankingPage.tsx";
 function App() {
   const selectedQuestion = useRecoilValue(QuestionSelectAtom);
   const selectContest = useRecoilValue(ContestSelect);
-  const [darkMode, setDarkMode] = useState(true);
-  const user = useRecoilValue(userAtom);
-  console.log(selectedQuestion);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkmode") === "true"
+  });
   const toggleDarkMode = () => {
+    localStorage.setItem("darkmode", `${!darkMode}`)
     setDarkMode(!darkMode);
   };
-
+  const user = useRecoilValue(userAtom);
   return (
     <Router>
       <div className="App">
@@ -39,16 +40,16 @@ function App() {
           <Route
             path="/:cid/ranking"
             element={
-              <RankingPage darkMode={darkMode}/>
+              <RankingPage darkMode={darkMode} />
             }
           />
           <Route
             path="/contest"
             element={
-              selectContest._id ? (
-                <ContestView darkMode={darkMode} />
+              selectContest._id && user ? (
+                <ContestView darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
               ) : (
-                <Navigate to="/" />
+                <Navigate to="/login" />
               )
             }
           />

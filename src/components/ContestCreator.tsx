@@ -111,7 +111,7 @@ const ContestCreator: React.FC<ContestCreatorProps> = ({ darkMode }) => {
     e.preventDefault();
     console.log("Saving contest:", { contestData, questions });
     try {
-      const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/create", {
+      const res = await fetch("http://localhost:5001/api/contest/create", {
         method: "POST",
           credentials: "include",
         headers: {

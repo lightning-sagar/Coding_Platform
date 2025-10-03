@@ -13,12 +13,14 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import ContestSelect from "../atoms/contestatom";
 import QuestionSelectAtom, { type Question } from "../atoms/QuestionAtom";
 import userAtom from "../atoms/UserAtom";
+import Navbar from "./Navbar";
 
 interface ContestViewProps {
   darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
-const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
+const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) => {
   const [selecContest, setselecContest] = useRecoilState(ContestSelect);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [showCountdown, _] = useState(false);
@@ -31,7 +33,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/fetch-multiple", {
+        const res = await fetch("http://localhost:5001/api/contest/fetch-multiple", {
           credentials: "include",
           method: "POST",
           headers: {
@@ -53,7 +55,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
 
   const start = async () => {
     try {
-      const res = await fetch("https://coding-platform-backend-ol9u.onrender.com/api/contest/start", {
+      const res = await fetch("http://localhost:5001/api/contest/start", {
         method: "POST",
           credentials: "include",
         headers: {
@@ -354,25 +356,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode }) => {
       }`}
     >
       {/* Header */}
-      <header
-        className={`sticky top-0 z-50 p-4 border-b backdrop-blur-md ${
-          darkMode
-            ? "bg-slate-900/80 border-slate-700/50"
-            : "bg-white/80 border-slate-200"
-        }`}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
-            darkMode
-              ? "hover:bg-slate-700/50 text-slate-300 hover:text-white"
-              : "hover:bg-slate-100 text-slate-600 hover:text-slate-900"
-          }`}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </button>
-      </header>
+      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Contest Info - Compact Version */}

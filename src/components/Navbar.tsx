@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
   const handleLogout = async () => {
     try {
       const res = await fetch(
-        "https://coding-platform-backend-ol9u.onrender.com/api/user/logout",
+        "http://localhost:5001/api/user/logout",
         {
           credentials: "include",
           method: "POST",

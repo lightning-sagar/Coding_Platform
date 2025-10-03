@@ -1,5 +1,5 @@
 import { Trophy } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/UserAtom";
@@ -12,7 +12,9 @@ interface NavbarPageProps {
 const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userAtom);
+  const [loading, setloading] = useState(false)
   const handleLogout = async () => {
+    setloading(true)
     try {
       const res = await fetch(
         "http://localhost:5001/api/user/logout",
@@ -31,6 +33,8 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally{
+      setloading(false)
     }
   };
   return (
@@ -48,7 +52,10 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
             <h1
               className={`ml-2 text-2xl font-bold ${
                 darkMode ? "text-white" : "text-gray-900"
-              }`}
+              } cursor-pointer`}
+              onClick={()=>{
+                navigate('/')
+              }}
             >
               CodeContest
             </h1>
@@ -89,11 +96,12 @@ const Navbar: React.FC<NavbarPageProps> = ({ darkMode, toggleDarkMode }) => {
             ) : (
               <button
                 onClick={handleLogout}
-                className={`px-4 py-2 border rounded-lg transition-colors ${
+                className={`px-4 py-2 border rounded-lg transition-colors cursor-pointer ${
                   darkMode
                     ? "text-orange-400 border-orange-400 hover:bg-orange-900/20"
                     : "text-orange-600 border-orange-600 hover:bg-orange-50"
                 }`}
+                disabled={loading}
               >
                 logout
               </button>

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, User, Trophy } from 'lucide-react';
+import { Mail, Lock, User, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import Authmode from '../atoms/Authmode';
 import userAtom from '../atoms/UserAtom';
+import Navbar from './Navbar';
 
 interface AuthPagesProps {
   darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
-const AuthPages: React.FC<AuthPagesProps> = ({ darkMode }) => {
+const AuthPages: React.FC<AuthPagesProps> = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate()
   const [mode,setmode] = useRecoilState(Authmode); 
   const setuser = useSetRecoilState(userAtom)
@@ -62,24 +64,21 @@ const AuthPages: React.FC<AuthPagesProps> = ({ darkMode }) => {
   };
 
   return (
+    <div className={`${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900' 
+        : 'bg-gradient-to-br from-orange-50 via-white to-orange-100'
+    }`}>
+    <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
     <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
       darkMode 
         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900' 
         : 'bg-gradient-to-br from-orange-50 via-white to-orange-100'
     }`}>
+      
       <div className="w-full max-w-md">
+        
         {/* Back Button */}
-        <button
-          onClick={()=>navigate(-1)}
-          className={`flex items-center transition-colors mb-8 ${
-            darkMode 
-              ? 'text-gray-400 hover:text-white' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Home
-        </button>
 
         {/* Auth Card */}
         <div className={`rounded-2xl shadow-xl border p-8 transition-colors duration-300 ${
@@ -258,6 +257,7 @@ const AuthPages: React.FC<AuthPagesProps> = ({ darkMode }) => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

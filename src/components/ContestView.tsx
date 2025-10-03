@@ -18,6 +18,14 @@ interface ContestViewProps {
   darkMode: boolean;
   toggleDarkMode: () => void;
 }
+type RankingUser = {
+  rank: number;
+  username: string;
+  Total_Score: number;
+  totalTimeTaken: number;
+  userId: string;
+};
+
 
 const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) => {
   const [selecContest, setselecContest] = useRecoilState(ContestSelect);
@@ -28,7 +36,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
     useRecoilState(QuestionSelectAtom);
   const navigate = useNavigate();
   const user = useRecoilValue(userAtom);
- 
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -56,7 +64,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
     try {
       const res = await fetch("http://localhost:5001/api/contest/start", {
         method: "POST",
-          credentials: "include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -108,6 +116,36 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
     navigate("/question");
   };
 
+  const [rankings, setRankings] = useState<RankingUser>({
+    rank: 0,
+    username: '',
+    Total_Score: 0,
+    totalTimeTaken: 0,
+    userId: ''
+  });
+  useEffect(() => {
+    const fetchRankings = async () => {
+      try {
+        const res = await fetch(`http://localhost:5001/api/contest/rankings/${selecContest._id}`, {
+          credentials: "include",
+          method: "GET"
+        });
+        const data = await res.json();
+        (data.map((r: any) => {
+          if (r.userId === user._id) {
+            console.log(r)
+            setRankings(r);
+          }
+        }));
+        console.log(rankings)
+      } catch (err) {
+        console.error("Error fetching rankings", err);
+      }
+    };
+
+    fetchRankings();
+  }, []);
+
   const getDifficultyColor = (difficulty: string) => {
     if (darkMode) {
       switch (difficulty) {
@@ -139,15 +177,13 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
   if (showCountdown) {
     return (
       <div
-        className={`min-h-screen flex items-center justify-center ${
-          darkMode ? "bg-gray-900 text-white" : "bg-white"
-        }`}
+        className={`min-h-screen flex items-center justify-center ${darkMode ? "bg-gray-900 text-white" : "bg-white"
+          }`}
       >
         <div className="text-center">
           <div
-            className={`text-8xl font-bold mb-4 animate-pulse ${
-              darkMode ? "text-orange-400" : "text-orange-600"
-            }`}
+            className={`text-8xl font-bold mb-4 animate-pulse ${darkMode ? "text-orange-400" : "text-orange-600"
+              }`}
           >
             {countdown}
           </div>
@@ -162,27 +198,24 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
   if (currentView === "contest-info") {
     return (
       <div
-        className={`min-h-screen flex items-center justify-center p-4 ${
-          darkMode
-            ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-            : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
-        }`}
+        className={`min-h-screen flex items-center justify-center p-4 ${darkMode
+          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
+          }`}
       >
         <div
-          className={`max-w-2xl w-full rounded-2xl p-8 shadow-2xl border backdrop-blur-sm ${
-            darkMode
-              ? "bg-slate-800/90 border-slate-700/50 text-white"
-              : "bg-white/90 border-slate-200 text-slate-900"
-          }`}
+          className={`max-w-2xl w-full rounded-2xl p-8 shadow-2xl border backdrop-blur-sm ${darkMode
+            ? "bg-slate-800/90 border-slate-700/50 text-white"
+            : "bg-white/90 border-slate-200 text-slate-900"
+            }`}
         >
           {/* Header */}
           <div className="text-center mb-8">
             <div
-              className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
-                darkMode
-                  ? "bg-orange-500/20 text-orange-400"
-                  : "bg-orange-100 text-orange-600"
-              }`}
+              className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${darkMode
+                ? "bg-orange-500/20 text-orange-400"
+                : "bg-orange-100 text-orange-600"
+                }`}
             >
               <Trophy className="w-8 h-8" />
             </div>
@@ -190,9 +223,8 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
               {selecContest.contesttitle}
             </h1>
             <p
-              className={`text-lg leading-relaxed ${
-                darkMode ? "text-slate-300" : "text-slate-600"
-              }`}
+              className={`text-lg leading-relaxed ${darkMode ? "text-slate-300" : "text-slate-600"
+                }`}
             >
               {selecContest.contestdesc}
             </p>
@@ -201,17 +233,15 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
           {/* Contest Stats */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div
-              className={`p-4 rounded-xl border ${
-                darkMode
-                  ? "bg-slate-700/50 border-slate-600/50"
-                  : "bg-slate-50 border-slate-200"
-              }`}
+              className={`p-4 rounded-xl border ${darkMode
+                ? "bg-slate-700/50 border-slate-600/50"
+                : "bg-slate-50 border-slate-200"
+                }`}
             >
               <div className="flex items-center mb-2">
                 <Target
-                  className={`w-5 h-5 mr-2 ${
-                    darkMode ? "text-blue-400" : "text-blue-600"
-                  }`}
+                  className={`w-5 h-5 mr-2 ${darkMode ? "text-blue-400" : "text-blue-600"
+                    }`}
                 />
                 <span className="font-semibold">Problems</span>
               </div>
@@ -219,17 +249,15 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
             </div>
 
             <div
-              className={`p-4 rounded-xl border ${
-                darkMode
-                  ? "bg-slate-700/50 border-slate-600/50"
-                  : "bg-slate-50 border-slate-200"
-              }`}
+              className={`p-4 rounded-xl border ${darkMode
+                ? "bg-slate-700/50 border-slate-600/50"
+                : "bg-slate-50 border-slate-200"
+                }`}
             >
               <div className="flex items-center mb-2">
                 <Users
-                  className={`w-5 h-5 mr-2 ${
-                    darkMode ? "text-green-400" : "text-green-600"
-                  }`}
+                  className={`w-5 h-5 mr-2 ${darkMode ? "text-green-400" : "text-green-600"
+                    }`}
                 />
                 <span className="font-semibold">Participants</span>
               </div>
@@ -255,11 +283,10 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
             <div className="flex items-center justify-between">
               <span className="font-medium">Status:</span>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  darkMode
-                    ? "text-emerald-400 bg-emerald-900/20 border border-emerald-700/50"
-                    : "text-emerald-700 bg-emerald-50 border border-emerald-200"
-                }`}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${darkMode
+                  ? "text-emerald-400 bg-emerald-900/20 border border-emerald-700/50"
+                  : "text-emerald-700 bg-emerald-50 border border-emerald-200"
+                  }`}
               >
                 {selecContest.status}
               </span>
@@ -269,9 +296,8 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
               <span className="font-medium">Duration:</span>
               <div className="flex items-center">
                 <Clock
-                  className={`w-4 h-4 mr-1 ${
-                    darkMode ? "text-slate-400" : "text-slate-500"
-                  }`}
+                  className={`w-4 h-4 mr-1 ${darkMode ? "text-slate-400" : "text-slate-500"
+                    }`}
                 />
                 <span className="text-sm">
                   {new Date(selecContest.startTime).toLocaleTimeString()} -{" "}
@@ -282,7 +308,7 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
           </div>
 
           {!selecContest.userId.includes(user._id) &&
-          selecContest.status === "active" ? (
+            selecContest.status === "active" ? (
             <button
               onClick={handleStartContest}
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl flex items-center justify-center group"
@@ -307,36 +333,31 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
   if (currentView === "countdown") {
     return (
       <div
-        className={`min-h-screen flex items-center justify-center ${
-          darkMode
-            ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-            : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
-        }`}
+        className={`min-h-screen flex items-center justify-center ${darkMode
+          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
+          }`}
       >
         <div className="text-center">
           <div
-            className={`text-9xl font-bold mb-8 animate-pulse ${
-              darkMode ? "text-orange-400" : "text-orange-600"
-            } drop-shadow-2xl`}
+            className={`text-9xl font-bold mb-8 animate-pulse ${darkMode ? "text-orange-400" : "text-orange-600"
+              } drop-shadow-2xl`}
           >
             {countdown}
           </div>
           <p
-            className={`text-2xl font-medium ${
-              darkMode ? "text-slate-300" : "text-slate-600"
-            }`}
+            className={`text-2xl font-medium ${darkMode ? "text-slate-300" : "text-slate-600"
+              }`}
           >
             Starting {selecContest.contesttitle}...
           </p>
           <div
-            className={`mt-4 w-32 h-1 mx-auto rounded-full ${
-              darkMode ? "bg-slate-700" : "bg-slate-200"
-            }`}
+            className={`mt-4 w-32 h-1 mx-auto rounded-full ${darkMode ? "bg-slate-700" : "bg-slate-200"
+              }`}
           >
             <div
-              className={`h-full rounded-full transition-all duration-1000 ${
-                darkMode ? "bg-orange-400" : "bg-orange-600"
-              }`}
+              className={`h-full rounded-full transition-all duration-1000 ${darkMode ? "bg-orange-400" : "bg-orange-600"
+                }`}
               style={{ width: `${((4 - countdown) / 3) * 100}%` }}
             />
           </div>
@@ -348,23 +369,21 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
   // Full Page View
   return (
     <div
-      className={`min-h-screen ${
-        darkMode
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white"
-          : "bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900"
-      }`}
+      className={`min-h-screen ${darkMode
+        ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white"
+        : "bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900"
+        }`}
     >
       {/* Header */}
-      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Contest Info - Compact Version */}
         <div
-          className={`rounded-2xl p-6 shadow-xl border mb-8 ${
-            darkMode
-              ? "bg-slate-800/50 border-slate-700/50 backdrop-blur-sm"
-              : "bg-white/80 border-slate-200 backdrop-blur-sm"
-          }`}
+          className={`rounded-2xl p-6 shadow-xl border mb-8 ${darkMode
+            ? "bg-slate-800/50 border-slate-700/50 backdrop-blur-sm"
+            : "bg-white/80 border-slate-200 backdrop-blur-sm"
+            }`}
         >
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -372,9 +391,8 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
                 {selecContest.contesttitle}
               </h1>
               <p
-                className={`text-sm ${
-                  darkMode ? "text-slate-300" : "text-slate-600"
-                }`}
+                className={`text-sm ${darkMode ? "text-slate-300" : "text-slate-600"
+                  }`}
               >
                 {selecContest.contestdesc}
               </p>
@@ -391,9 +409,8 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div className="flex items-center">
               <Clock
-                className={`w-4 h-4 mr-2 ${
-                  darkMode ? "text-slate-400" : "text-slate-500"
-                }`}
+                className={`w-4 h-4 mr-2 ${darkMode ? "text-slate-400" : "text-slate-500"
+                  }`}
               />
               <span>
                 {new Date(selecContest.startTime).toLocaleTimeString()} -{" "}
@@ -402,27 +419,24 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
             </div>
             <div className="flex items-center">
               <Target
-                className={`w-4 h-4 mr-2 ${
-                  darkMode ? "text-slate-400" : "text-slate-500"
-                }`}
+                className={`w-4 h-4 mr-2 ${darkMode ? "text-slate-400" : "text-slate-500"
+                  }`}
               />
               <span>{selecContest.quesId.length} Problems</span>
             </div>
             <div className="flex items-center">
               <Users
-                className={`w-4 h-4 mr-2 ${
-                  darkMode ? "text-slate-400" : "text-slate-500"
-                }`}
+                className={`w-4 h-4 mr-2 ${darkMode ? "text-slate-400" : "text-slate-500"
+                  }`}
               />
               <span>{selecContest?.userId.length} Participants</span>
             </div>
             <div className="flex items-center">
               <Star
-                className={`w-4 h-4 mr-2 ${
-                  darkMode ? "text-slate-400" : "text-slate-500"
-                }`}
+                className={`w-4 h-4 mr-2 ${darkMode ? "text-slate-400" : "text-slate-500"
+                  }`}
               />
-              <span>Your Score: 0</span>
+              <span>Your Score: {rankings.Total_Score || 0}</span>
             </div>
           </div>
         </div>
@@ -431,9 +445,8 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-6 flex items-center">
             <Trophy
-              className={`w-6 h-6 mr-3 ${
-                darkMode ? "text-orange-400" : "text-orange-600"
-              }`}
+              className={`w-6 h-6 mr-3 ${darkMode ? "text-orange-400" : "text-orange-600"
+                }`}
             />
             Problems
           </h2>
@@ -441,11 +454,10 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
           <div className="grid gap-4">
             {questions.length === 0 ? (
               <div
-                className={`p-8 text-center rounded-xl border ${
-                  darkMode
-                    ? "bg-slate-800/50 border-slate-700/50 text-slate-400"
-                    : "bg-slate-50 border-slate-200 text-slate-500"
-                }`}
+                className={`p-8 text-center rounded-xl border ${darkMode
+                  ? "bg-slate-800/50 border-slate-700/50 text-slate-400"
+                  : "bg-slate-50 border-slate-200 text-slate-500"
+                  }`}
               >
                 <Target className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>No questions found</p>
@@ -454,18 +466,16 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
               questions.map((q, index) => (
                 <div
                   key={q._id}
-                  className={`p-6 border rounded-xl transition-all duration-200 hover:shadow-lg cursor-pointer group ${
-                    darkMode
-                      ? "bg-slate-800/50 border-slate-700/50 hover:bg-slate-700/50 hover:border-slate-600"
-                      : "bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300"
-                  }`}
+                  className={`p-6 border rounded-xl transition-all duration-200 hover:shadow-lg cursor-pointer group ${darkMode
+                    ? "bg-slate-800/50 border-slate-700/50 hover:bg-slate-700/50 hover:border-slate-600"
+                    : "bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300"
+                    }`}
                   onClick={handleQuestionClick(q)}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <h3
-                      className={`text-lg font-semibold group-hover:text-orange-500 transition-colors ${
-                        darkMode ? "text-white" : "text-slate-900"
-                      }`}
+                      className={`text-lg font-semibold group-hover:text-orange-500 transition-colors ${darkMode ? "text-white" : "text-slate-900"
+                        }`}
                     >
                       {String.fromCharCode(65 + index)}. {q.title}
                     </h3>
@@ -481,25 +491,22 @@ const ContestView: React.FC<ContestViewProps> = ({ darkMode, toggleDarkMode }) =
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center">
                       <Clock
-                        className={`w-4 h-4 mr-1 ${
-                          darkMode ? "text-slate-400" : "text-slate-500"
-                        }`}
+                        className={`w-4 h-4 mr-1 ${darkMode ? "text-slate-400" : "text-slate-500"
+                          }`}
                       />
                       <span>Time: {formatTime(q.timeLimit)}</span>
                     </div>
                     <div className="flex items-center">
                       <Target
-                        className={`w-4 h-4 mr-1 ${
-                          darkMode ? "text-slate-400" : "text-slate-500"
-                        }`}
+                        className={`w-4 h-4 mr-1 ${darkMode ? "text-slate-400" : "text-slate-500"
+                          }`}
                       />
                       <span>Memory: {q.memoryLimit}MB</span>
                     </div>
                     <div className="flex items-center">
                       <Star
-                        className={`w-4 h-4 mr-1 ${
-                          darkMode ? "text-slate-400" : "text-slate-500"
-                        }`}
+                        className={`w-4 h-4 mr-1 ${darkMode ? "text-slate-400" : "text-slate-500"
+                          }`}
                       />
                       <span>Points: {q.points}</span>
                     </div>

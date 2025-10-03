@@ -70,7 +70,7 @@ function App() {
               user ? (
                 <Navigate to="/" replace />
               ) : (
-                <AuthPages darkMode={darkMode} />
+                <AuthPages darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
               )
             }
           />
@@ -81,7 +81,7 @@ function App() {
               user ? (
                 <Navigate to="/" replace />
               ) : (
-                <AuthPages darkMode={darkMode} />
+                <AuthPages darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
               )
             }
           />
@@ -89,7 +89,7 @@ function App() {
           {/* Contest Creator Page */}
           <Route
             path="/create-contest"
-            element={<ContestCreator darkMode={darkMode} />}
+            element={<ContestCreator darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
           />
         </Routes>
       </div>

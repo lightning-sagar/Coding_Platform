@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  ArrowLeft,
   Plus,
   Trash2,
   Save,
@@ -8,6 +7,7 @@ import {
   MemoryStick,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 interface TestCase {
   input: string;
@@ -26,9 +26,10 @@ interface Question {
 
 interface ContestCreatorProps {
   darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
-const ContestCreator: React.FC<ContestCreatorProps> = ({ darkMode }) => {
+const ContestCreator: React.FC<ContestCreatorProps> = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
   const [contestData, setContestData] = useState({
     title: "",
@@ -183,17 +184,7 @@ const ContestCreator: React.FC<ContestCreatorProps> = ({ darkMode }) => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <button
-              onClick={() => navigate(-1)}
-              className={`flex items-center transition-colors ${
-                darkMode
-                  ? "text-gray-400 hover:text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Home
-            </button>
+            <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
             <button
               onClick={handleSaveContest}
               className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 type RankingUser = {
   _id: string;
   username: string;
-  score: number;
+  Total_Score: number;
   totalTimeTaken: number;
 };
 
@@ -57,7 +57,7 @@ const RankingPage = ({ darkMode }: { darkMode: boolean }) => {
                 <tr key={user._id} className="text-center">
                   <td className="border px-4 py-2">{idx + 1}</td>
                   <td className="border px-4 py-2">{user.username}</td>
-                  <td className="border px-4 py-2">{user.score}</td>
+                  <td className="border px-4 py-2">{user.Total_Score}</td>
                   <td className="border px-4 py-2">{user.totalTimeTaken}</td>
                 </tr>
               ))}

@@ -37,7 +37,7 @@ type QuestionViewProps = {
 const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
   const question = useRecoilValue(QuestionSelectAtom);
   const Contest = useRecoilValue(ContestSelect);
-  console.log(Contest," let find the time")
+  console.log(Contest, " let find the time")
   const navigate = useNavigate();
 
   const [selectedLanguage, setSelectedLanguage] = useState<
@@ -128,6 +128,87 @@ const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
         return testCase;
       })
     );
+    const allPassed = results.every(result => result.correct);
+    if (allPassed) {
+      showCelebrationToast();
+    }
+  };
+
+  const showCelebrationToast = () => {
+    // Add animations style only once
+    if (!document.getElementById('celebration-toast-styles')) {
+      const style = document.createElement('style');
+      style.id = 'celebration-toast-styles';
+      style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+      document.head.appendChild(style);
+    }
+
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('celebration-toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'celebration-toast-container';
+      toastContainer.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    `;
+      document.body.appendChild(toastContainer);
+    }
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    animation: slideIn 0.3s ease-out, slideOut 0.3s ease-in 2.7s;
+    margin-bottom: 10px;
+  `;
+
+    toast.innerHTML = `
+    <span style="font-size: 24px;">🎉</span>
+    <span>All test cases passed! Congratulations!</span>
+    <span style="font-size: 24px;">✨</span>
+  `;
+
+    toastContainer.appendChild(toast);
+
+    // Remove toast after animation
+    setTimeout(() => {
+      toast.remove();
+      if (toastContainer.children.length === 0) {
+        toastContainer.remove();
+      }
+    }, 3000);
   };
 
   const handleSubmit = async () => {
@@ -150,7 +231,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
         credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           code,
           qId: question._id,
           language: selectedLanguage,
@@ -236,23 +317,23 @@ const QuestionView: React.FC<QuestionViewProps> = ({ darkMode }) => {
       }
     }
   };
-  const [time, setTime] = useState<number>(() => 
-      new Date(Contest.endTime).getTime() - Date.now()
-    );
+  const [time, setTime] = useState<number>(() =>
+    new Date(Contest.endTime).getTime() - Date.now()
+  );
   useEffect(() => {
     const interval = setInterval(() => {
       const remaining = new Date(Contest.endTime).getTime() - Date.now();
       setTime(remaining > 0 ? remaining : 0);
-    }, 1000);  
-    return () => clearInterval(interval); 
+    }, 1000);
+    return () => clearInterval(interval);
   }, [Contest.endTime]);
 
-  const formatTime = (ms:number) =>{
-    const totalSec = Math.floor(ms / 1000); 
-    const days = Math.floor(totalSec / 86400); 
+  const formatTime = (ms: number) => {
+    const totalSec = Math.floor(ms / 1000);
+    const days = Math.floor(totalSec / 86400);
     const hours = Math.floor((totalSec % 86400) / 3600);
     const min = Math.floor((totalSec % 3600) / 60);
-    const sec = totalSec % 60; 
+    const sec = totalSec % 60;
 
     return `${days}d ${hours}h ${min}m ${sec}s`;
   }
